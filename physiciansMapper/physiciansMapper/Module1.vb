@@ -5,7 +5,11 @@ Imports System.IO
 Imports System.Collections
 Imports System.data.sqlclient
 Module Module1
-    Public objIniFile As New INIFile("c:\newfeeds\HL7Mapper.ini")
+    Private fullinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\Configs\ULH\HL7Mapper.ini")) ' New test
+    'Private fullinipath As String = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory, "..\..\..\..\..\..\..\..\..\Configs\ULH\HL7Mapper.ini")) ' local
+    Public objIniFile As New INIFile(fullinipath) '20140817 - New Test
+    'Public objIniFile As New INIFile("c:\newfeeds\HL7Mapper.ini") 'Old Prod
+    'Public objIniFile As New INIFile("C:\KY2 Test Environment\HL7Mapper.ini") 'Local
     Dim strInputDirectory As String = ""
     Dim strOutputDirectory As String = ""
     Dim strOutputSubDirectory As String = ""
@@ -21,12 +25,16 @@ Module Module1
         Dim dictNVP As New Hashtable
         Dim s As String
         Dim s1 As String
-        
+
         Dim dir As String
-        strInputDirectory = objIniFile.GetString("physicians", "physiciansinputDir", "(none)") 'c:\feeds\HL7\physician\
-        strOutputDirectory = objIniFile.GetString("physicians", "physiciansoutputdirectory", "(none)") 'c:\feeds\ltw\physicians\
-        strMapperFile = objIniFile.GetString("physicians", "physiciansmapper", "(none)")
-        strLogFile = objIniFile.GetString("Settings", "logs", "(none)") 'c:\feeds\logs\
+
+        Dim dire As String = objIniFile.GetString("Settings", "directory", "(none)") & ":\"
+        Dim parent As String = objIniFile.GetString("Settings", "parentDir", "(none)") & "\"
+
+        strInputDirectory = dire & parent & objIniFile.GetString("Physicians", "physiciansinputDir", "(none)") 'c:\feeds\HL7\physician\
+        strOutputDirectory = dire & parent & objIniFile.GetString("Physicians", "physiciansoutputdirectory", "(none)") 'c:\feeds\ltw\physicians\
+        strMapperFile = dire & parent & objIniFile.GetString("Physicians", "physiciansmapper", "(none)")
+        strLogFile = dire & parent & objIniFile.GetString("Settings", "logs", "(none)") 'c:\feeds\logs\
 
         'Dim LogFile As StreamWriter = File.AppendText(strLogFile & "ShelbyMapperLog.txt")
 
